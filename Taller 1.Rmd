@@ -1,0 +1,157 @@
+---
+title: "Taller 1"
+output: html_notebook
+---
+
+#### Llamo a la librería:
+
+```{r}
+library(readxl)
+```
+
+#### Cargo el archivo:
+
+```{r}
+PelicanStores <- read_excel("C:\\Universidad\\2023-2\\Estadística General\\Taller 1\\PelicanStores.xlsx")
+```
+
+## Punto 1
+
+#### Variable Categórica a escoger: *Metodo_de_Pago*
+
+#### Frecuencia Absoluta de cada uno de los diferentes métodos de pago:
+
+```{r}
+FrecuenciaAbs_MetPago <- table(PelicanStores$Metodo_de_Pago)
+print(FrecuenciaAbs_MetPago)
+```
+
+#### Tabla Resumen de Pelican Stores en base al Método de Pago:
+
+```{r}
+library(dplyr)
+TablaResumen <- data.frame(
+  Metodo_de_Pago = names(FrecuenciaAbs_MetPago),
+  Frecuencia_Absoluta = as.vector(FrecuenciaAbs_MetPago),
+  Frecuencia_Relativa = as.vector(FrecuenciaAbs_MetPago) / nrow(PelicanStores),
+  Porcentaje = (as.vector(FrecuenciaAbs_MetPago) / nrow(PelicanStores)) * 100
+)
+
+print(TablaResumen)
+```
+
+#### Gráfico de Barras (Frecuencia Absoluta):
+
+```{r}
+barplot(TablaResumen$Frecuencia_Absoluta, names.arg = TablaResumen$Metodo_de_Pago, 
+        xlab = "Método de Pago", ylab = "Número de Clientes", col = "green", las = 2)
+```
+
+#### Diagrama Tipo Pastel (Porcentaje):
+
+```{r}
+pie(TablaResumen$Porcentaje, labels = paste(TablaResumen$Metodo_de_Pago, "(", round(TablaResumen$Porcentaje,2), "%)"), 
+    col = rainbow(length(TablaResumen$Metodo_de_Pago)))
+```
+
+## Punto 2
+
+#### Variable Numérica a escoger: *Ventas_Netas*
+
+#### Primero, hay que reordenar los datos en función de esa variable:
+
+```{r}
+PelicanStores_Reordenado <- PelicanStores %>%
+  arrange(Ventas_Netas)
+
+print(PelicanStores_Reordenado)
+```
+
+#### Encontrar el rango de esa variable:
+
+```{r}
+rango <- diff(range(PelicanStores_Reordenado$Ventas_Netas))
+print(rango)
+```
+
+#### Encontrar el número de clases (intervalos):
+
+```{r}
+n <- nrow(PelicanStores_Reordenado)
+clases <- ceiling(1 + log2(n))
+
+print(clases)
+```
+
+#### Encontrar la amplitud de cada intervalo:
+
+```{r}
+a <- ceiling(rango / clases)
+
+print(a)
+```
+
+#### Media
+
+```{r}
+media <- sum(PelicanStores_Reordenado$Ventas_Netas)/n
+media2 <- mean(PelicanStores_Reordenado$Ventas_Netas)
+print(media2)
+```
+
+#### Mediana
+
+```{r}
+mediana <- median(PelicanStores_Reordenado$Ventas_Netas)
+print(mediana)
+```
+
+#### Moda
+
+```{r}
+library(modeest)
+moda <- mfv(PelicanStores_Reordenado$Ventas_Netas)
+print(moda)
+```
+
+#### Cuantiles
+
+```{r}
+quantile(PelicanStores_Reordenado$Ventas_Netas)
+```
+
+#### Percentil 14
+
+```{r}
+quantile(PelicanStores_Reordenado$Ventas_Netas, 0.14)
+```
+
+#### Deciles
+
+```{r}
+quantile(PelicanStores_Reordenado$Ventas_Netas, seq(0,1,by=0.1))
+```
+
+#### Rango
+
+```{r}
+range(PelicanStores_Reordenado$Ventas_Netas)
+```
+
+#### Rango Intercuartílico
+
+```{r}
+IQR(PelicanStores_Reordenado$Ventas_Netas)
+```
+
+#### Varianza
+
+```{r}
+var(PelicanStores_Reordenado$Ventas_Netas)
+```
+
+#### Desviación Estándar
+
+```{r}
+sd(PelicanStores_Reordenado$Ventas_Netas)
+```
